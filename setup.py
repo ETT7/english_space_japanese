@@ -33,10 +33,32 @@ import re
 import sys
 
 def add_space_around_english(text):
-    pattern = r'([a-zA-Z0-9]+)'
-    spaced_text = re.sub(pattern, r' \\1 ', text)
-    spaced_text = re.sub(r'\\s+', ' ', spaced_text)
-    return spaced_text.strip()
+    # Regex pattern to match URLs
+    url_pattern = r'(https?://\\S+)'
+
+    # Regex pattern to match English words
+    english_pattern = r'([a-zA-Z0-9]+)'
+
+    # Function to avoid formatting URLs
+    def replace_non_urls(match):
+        if re.match(url_pattern, match.group(0)):
+            return match.group(0)  # Return URL as is
+        else:
+            return f" {match.group(0)} "  # Add spaces around English words
+
+    # Apply the pattern to each line
+    lines = text.splitlines()
+    formatted_lines = []
+
+    for line in lines:
+        # First, avoid formatting URLs
+        formatted_line = re.sub(english_pattern, replace_non_urls, line)
+        # Replace multiple spaces with a single space
+        formatted_line = re.sub(r'\\s+', ' ', formatted_line)
+        formatted_lines.append(formatted_line.strip())
+
+    # Join the lines back with original line breaks
+    return "\\n".join(formatted_lines)
 
 def format_file(filepath):
     # Read the file content
