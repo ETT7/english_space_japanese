@@ -1,6 +1,8 @@
 import os
 import json
 import platform
+import re
+import sys
 
 # Determine the OS
 current_os = platform.system()
@@ -24,7 +26,7 @@ else:
 PYTHON_SCRIPT_NAME = "eng_space_jpn.py"
 
 # Step 1: Create Python script directory if it doesn't exist
-print("Creating Python script directory...")
+print(f"Creating Python script directory at: {PYTHON_SCRIPT_DIR}...")
 os.makedirs(PYTHON_SCRIPT_DIR, exist_ok=True)
 
 # Step 2: Write the Python script to the target directory
@@ -33,32 +35,24 @@ import re
 import sys
 
 def add_space_around_english(text):
-    # Regex pattern to match URLs
-    url_pattern = r'(https?://\\S+)'
+    # Regex to detect Japanese followed by English/number or English/number followed by Japanese
+    mixed_pattern = re.compile(r'([\\u3040-\\u30FF\\u4E00-\\u9FFF])([a-zA-Z0-9])|([a-zA-Z0-9])([\\u3040-\\u30FF\\u4E00-\\u9FFF])')
 
-    # Regex pattern to match English words
-    english_pattern = r'([a-zA-Z0-9]+)'
+    def add_space(match):
+        if match.group(1) and match.group(2):  # Japanese followed by English/number
+            return f"{match.group(1)} {match.group(2)}"
+        elif match.group(3) and match.group(4):  # English/number followed by Japanese
+            return f"{match.group(3)} {match.group(4)}"
+        return match.group(0)
 
-    # Function to avoid formatting URLs
-    def replace_non_urls(match):
-        if re.match(url_pattern, match.group(0)):
-            return match.group(0)  # Return URL as is
-        else:
-            return f" {match.group(0)} "  # Add spaces around English words
+    # Apply the pattern to the entire text
+    formatted_text = re.sub(mixed_pattern, add_space, text)
 
-    # Apply the pattern to each line
-    lines = text.splitlines()
-    formatted_lines = []
+    # Add space between English letters and punctuation marks for better readability
+    formatted_text = re.sub(r'([a-zA-Z])([、。])', r'\\1 \\2', formatted_text)
+    formatted_text = re.sub(r'([、。])([a-zA-Z])', r'\\1 \\2', formatted_text)
 
-    for line in lines:
-        # First, avoid formatting URLs
-        formatted_line = re.sub(english_pattern, replace_non_urls, line)
-        # Replace multiple spaces with a single space
-        formatted_line = re.sub(r'\\s+', ' ', formatted_line)
-        formatted_lines.append(formatted_line.strip())
-
-    # Join the lines back with original line breaks
-    return "\\n".join(formatted_lines)
+    return formatted_text
 
 def format_file(filepath):
     # Read the file content
@@ -82,10 +76,11 @@ if __name__ == "__main__":
     print(f"File '{filepath}' formatted successfully.")
 """
 
-with open(os.path.join(PYTHON_SCRIPT_DIR, PYTHON_SCRIPT_NAME), 'w') as python_file:
+script_file_path = os.path.join(PYTHON_SCRIPT_DIR, PYTHON_SCRIPT_NAME)
+with open(script_file_path, 'w') as python_file:
     python_file.write(python_script_content)
 
-print(f"Python script created at: {PYTHON_SCRIPT_DIR}/{PYTHON_SCRIPT_NAME}")
+print(f"Python script created at: {script_file_path}")
 
 # Step 3: Update VS Code tasks.json to include dynamic home directory
 VSCODE_TASKS_FILE = os.path.join(VSCODE_SETTINGS_DIR, "tasks.json")
@@ -96,14 +91,14 @@ tasks_content = {
             "label": "eng_SPACE_jpn",
             "type": "shell",
             "command": PYTHON_COMMAND,
-            "args": [os.path.join(PYTHON_SCRIPT_DIR, PYTHON_SCRIPT_NAME), "${file}"],  # Pass the current open file as an argument
+            "args": [script_file_path, "${file}"],  # Pass the current open file as an argument
             "group": {
                 "kind": "build",
                 "isDefault": True
             },
             "presentation": {
-                "echo": False,
-                "reveal": "never",
+                "echo": True,
+                "reveal": "always",
                 "focus": False,
                 "panel": "shared"
             },
