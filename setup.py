@@ -45,14 +45,17 @@ def add_space_around_english(text):
             return f"{match.group(3)} {match.group(4)}"
         return match.group(0)
 
-    # Apply the pattern to the entire text
-    formatted_text = re.sub(mixed_pattern, add_space, text)
+    # Apply the pattern multiple times until no more matches are found
+    previous_text = ''
+    while previous_text != text:
+        previous_text = text
+        text = re.sub(mixed_pattern, add_space, text)
 
     # Add space between English letters and punctuation marks for better readability
-    formatted_text = re.sub(r'([a-zA-Z])([、。])', r'\\1 \\2', formatted_text)
-    formatted_text = re.sub(r'([、。])([a-zA-Z])', r'\\1 \\2', formatted_text)
+    text = re.sub(r'([a-zA-Z])([、。])', r'\\1 \\2', text)
+    text = re.sub(r'([、。])([a-zA-Z])', r'\\1 \\2', text)
 
-    return formatted_text
+    return text
 
 def format_file(filepath):
     # Read the file content
