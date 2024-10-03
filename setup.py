@@ -38,26 +38,25 @@ def add_space_around_english(text):
     # Regex to detect Japanese followed by English/number or English/number followed by Japanese
     mixed_pattern = re.compile(r'([\\u3040-\\u30FF\\u4E00-\\u9FFF])([a-zA-Z0-9])|([a-zA-Z0-9])([\\u3040-\\u30FF\\u4E00-\\u9FFF])')
 
-    # Regex to add space around symbols and Japanese characters but not between symbols
-    symbol_pattern = re.compile(r'([\\u3040-\\u30FF\\u4E00-\\u9FFF。、！？「」])([\\[\\](){}%+\\-*/#&.,!?])|([\\[\\](){}%+\\-*/#&.,!?])([\\u3040-\\u30FF\\u4E00-\\u9FFF。、！？「」])')
-
-    # Regex to handle spaces between Japanese special characters and English words
-    special_char_english_pattern = re.compile(r'([。、！？「」])([a-zA-Z])')
-
     # Regex to detect file paths (e.g., /usr/local/bin or C:\\Users\\User\\Documents)
     file_path_pattern = re.compile(r'([a-zA-Z]:\\\\|/)[^\s]*')
+
+    # Regex to detect symbols with Japanese inside and skip them from adding spaces
+    inside_symbols_pattern = re.compile(r'[\\(\\{\\[<][^\\(\\{\\[\\]<>{}]*[\\u3040-\\u30FF\\u4E00-\\u9FFF][^\\)\\}\\]>]*[\\)\\}\\]>]')
+
+    # Regex to ensure no spaces are added inside or outside around symbols
+    outside_symbols_pattern = re.compile(r'([\\(\\{\\[<])\\s*([^\\)\\}\\]>]+?)\\s*([\\)\\}\\]>])')
+
+    # Regex to handle spaces between Japanese punctuation and English words
+    special_char_english_pattern = re.compile(r'([。、！？「」])([a-zA-Z])')
+
+    # Regex to handle spaces outside of symbols when followed or preceded by Japanese characters
+    outside_japanese_symbols_pattern = re.compile(r'([\\u3040-\\u30FF\\u4E00-\\u9FFF])([\\(\\{\\[<])|([\\)\\}\\]>])([\\u3040-\\u30FF\\u4E00-\\u9FFF])')
 
     def add_space(match):
         if match.group(1) and match.group(2):  # Japanese followed by English/number
             return f"{match.group(1)} {match.group(2)}"
         elif match.group(3) and match.group(4):  # English/number followed by Japanese
-            return f"{match.group(3)} {match.group(4)}"
-        return match.group(0)
-
-    def add_space_symbols(match):
-        if match.group(1) and match.group(2):  # Japanese or Japanese punctuation followed by symbol
-            return f"{match.group(1)} {match.group(2)}"  # Space between Japanese and symbol
-        elif match.group(3) and match.group(4):  # Symbol followed by Japanese or Japanese punctuation
             return f"{match.group(3)} {match.group(4)}"
         return match.group(0)
 
@@ -69,18 +68,26 @@ def add_space_around_english(text):
 
     text = re.sub(file_path_pattern, replace_file_path, text)  # Detect file paths and replace them with placeholders
 
-    # Step 2: Apply the pattern until no more changes are made
+    # Step 2: Skip adding spaces inside symbols that contain Japanese characters
+    text = re.sub(inside_symbols_pattern, lambda m: m.group(0), text)  # Ignore symbols with Japanese inside
+
+    # Step 3: Apply the pattern to handle spaces between Japanese and English/number
     previous_text = None
     while previous_text != text:
         previous_text = text
         text = re.sub(mixed_pattern, add_space, text)  # Handle Japanese and English/number
-        text = re.sub(symbol_pattern, add_space_symbols, text)  # Handle Japanese and symbols
-        text = re.sub(special_char_english_pattern, r"\\1 \\2", text)  # Add space between Japanese special chars and English
+        text = re.sub(special_char_english_pattern, r"\\1 \\2", text)  # Add space between Japanese punctuation and English
 
-    # Add space between English letters and Japanese punctuation marks for better readability
+    # Step 4: Remove unnecessary spaces inside and around the symbols
+    text = re.sub(outside_symbols_pattern, r'\\1\\2\\3', text)
+
+    # Step 5: Add space outside symbols when followed or preceded by Japanese characters
+    text = re.sub(outside_japanese_symbols_pattern, lambda m: f"{m.group(1) or ''} {m.group(2) or m.group(3)} {m.group(4) or ''}".strip(), text)
+
+    # Step 6: Add space between English letters and Japanese punctuation marks for better readability
     text = re.sub(r'([a-zA-Z])([、。！？])', r'\\1 \\2', text)
 
-    # Step 3: Restore file paths in the text
+    # Step 7: Restore file paths in the text
     for i, file_path in enumerate(file_paths):
         text = text.replace(f"__FILE_PATH_{i+1}__", file_path)
 
