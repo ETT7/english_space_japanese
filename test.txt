@@ -1,0 +1,72 @@
+# Test Case 1: Basic mixed Japanese and English sentence formatting
+こんにちは、今日はとてもいい天気ですね！ Let's go to the park together and enjoy the weather.
+Check this website: https://example.com for more information. 日本は美しいです。
+
+# Test Case 2: Symbols adjacent to Japanese characters and English text
+彼は 3 つのアイテム (+100% 増量 /# 割引 ) を購入しました。これは [ すごい ] です！とてもお得です。
+I will meet you at 5pm/17 時に公園で会いましょう。 彼は +5% のスコアアップを達成しました。
+
+# Test Case 3: Dates, times, and numbers mixed with Japanese and English
+彼は午後 6 時 30 分に到着しました。 I'll be there at 2:30pm sharp! 午前 10 時にカフェでコーヒーを飲みましょう。
+
+# Test Case 4: English punctuation marks after Japanese text
+今日は忙しい。 I’m ready! 彼女は言いました：「さあ行こう！」 She is coming soon.
+
+# Test Case 5: Brackets (opening and closing) and mixed punctuation
+これは ( テスト ) です。そして [ 正しい ] ことです。 { 日本 } に行きます。<html>タグがあります。
+
+# Test Case 6: URLs and file paths (should not be formatted)
+URL の例: https://example.com 。ファイルパス: /usr/local/bin 。
+
+# Test Case 7: Punctuation followed by brackets or symbols (e.g., 。 [)
+それではまた今度。 [ テスト ] 、 { 例 } 、 [ これもテストです ] 。
+これも例です:。 [ この部分もテスト ] 。
+
+# Test Case 8: Mathematical expressions and percentages
+数学の問題では、 (2+3) * 5 = 25 のような計算を行います。彼女は [+5%] のスコアアップを達成しました。
+他の式：(3 * 4) / 2 = 6。
+
+# Test Case 9: Handling mixed punctuation around English words and Japanese
+「さあ行こう！」 She is coming soon. 「やった！」 We're done! It’s amazing ！明日が楽しみです。
+
+# Test Case 10: Special characters in mixed Japanese-English text
+私は新しいソフトウェアをインストールします。 ( これは重要です！ ) そして [ ファイル ] を (/usr/local/bin) に置きます。
+
+# Test Case 11: Compound mixed sentences with punctuation
+私は英語を学んでいます。 I'm improving my English skills. これが本日の予定です：[1] 午後 3 時に会議。 (2) 午後 5 時にジム。
+彼はメールを送りました：Please email me at: john.doe@example.com 。
+
+# Test Case 12: Nested symbols and punctuation
+彼は [ テスト ( サンプル )] を行いました。次の例を見てください：[ これ ( 例 1)] 、 [ これ { 例 2}] 、 ( 最後の例 ) 。
+
+# Test Case 13: Handling of special Japanese punctuation combined with symbols
+彼女は ( ！ )[ すごい ] ことを言いました。これが例です：[ テスト ] 、 ( 計算 ) 、<タグ>。
+
+# Test Case 14: Handling common phrases mixing punctuation and symbols
+また来週！ (Let's meet up next week.) さようなら。 [Goodbye] 、ではまた。 [See you soon!]
+日本に行ったら、 [ 富士山 ] を見に行きましょう！ { 最高の場所 } です。
+
+# Test Case 15: Spacing between punctuation, brackets, and special characters
+それではまた今度。 [ 私の予定 ] 、 ( これは重要な部分です ) 。 { もう一度確認します } 。 [ 終了 ] 。
+
+# Test Case 16: Testing English punctuation followed by Japanese characters
+I’m excited ！これはすごいです。 I can't wait ！明日が楽しみです。 [ もうすぐ ] 。
+
+# Test Case 17: Complex mathematical expressions with symbols
+数学の問題では、 (3 * 5 + 2) - 1 = 16 のような計算を行います。複雑な式は、 (4 + 3) * [5 - 2] = 21 のように解決します。
+
+# Test Case 18: Special handling of quotes and symbols around punctuation
+彼女は言いました：「 [ とてもいい ]( ！ ) 」、彼は [ そうだ ]( ！ ) と答えました。 { すごい }( 事例 ) です。
+彼は [( 例 ) として ]( ！ ) 説明を続けました。
+
+# Test Case 19: Nested symbols and mixed punctuation
+彼は [ 例 (1)] を提示しました。 ( 彼女は [ テスト ] を受けました ) 。 { このテストは重要です。 }
+
+# Test Case 20: Handling Japanese special characters followed by symbols
+これはすごい！ ( これもすごい )[ サンプル ] 、 { 例 } 、<タグ>、 ( もう一度 ) 。
+彼は [ テスト ]( ！ ) をしました。次に ( ！ )[ 例 ] を見せます。
+
+# Test Case 21: Combination of all elements
+これが最終テストです：[ 本当の例 ]( ！ )[ サンプル ]{ 例 }[ テスト ] 。メールを送ってください：Please email me at: john.doe@example.com 。
+彼は「さあ行こう！」と言いました。 She is excited ！明日も楽しみです！次の例を見せます：[ これ { 例 2}] 、 ( もう一度テスト ) 。
+また会いましょう！ (Let's meet again ！ )

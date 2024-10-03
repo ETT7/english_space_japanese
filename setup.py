@@ -38,6 +38,12 @@ def add_space_around_english(text):
     # Regex to detect Japanese followed by English/number or English/number followed by Japanese
     mixed_pattern = re.compile(r'([\\u3040-\\u30FF\\u4E00-\\u9FFF])([a-zA-Z0-9])|([a-zA-Z0-9])([\\u3040-\\u30FF\\u4E00-\\u9FFF])')
 
+    # Regex to add space around symbols and Japanese characters but not between symbols
+    symbol_pattern = re.compile(r'([\\u3040-\\u30FF\\u4E00-\\u9FFF。、！？「」])([\\[\\](){}%+\\-*/#&.,!?])|([\\[\\](){}%+\\-*/#&.,!?])([\\u3040-\\u30FF\\u4E00-\\u9FFF。、！？「」])')
+
+    # Regex to handle spaces between Japanese special characters and English words
+    special_char_english_pattern = re.compile(r'([。、！？「」])([a-zA-Z])')
+
     def add_space(match):
         if match.group(1) and match.group(2):  # Japanese followed by English/number
             return f"{match.group(1)} {match.group(2)}"
@@ -45,15 +51,23 @@ def add_space_around_english(text):
             return f"{match.group(3)} {match.group(4)}"
         return match.group(0)
 
-    # Apply the pattern multiple times until no more matches are found
-    previous_text = ''
+    def add_space_symbols(match):
+        if match.group(1) and match.group(2):  # Japanese or Japanese punctuation followed by symbol
+            return f"{match.group(1)} {match.group(2)}"  # Space between Japanese and symbol
+        elif match.group(3) and match.group(4):  # Symbol followed by Japanese or Japanese punctuation
+            return f"{match.group(3)} {match.group(4)}"
+        return match.group(0)
+
+    # Apply the pattern until no more changes are made
+    previous_text = None
     while previous_text != text:
         previous_text = text
-        text = re.sub(mixed_pattern, add_space, text)
+        text = re.sub(mixed_pattern, add_space, text)  # Handle Japanese and English/number
+        text = re.sub(symbol_pattern, add_space_symbols, text)  # Handle Japanese and symbols
+        text = re.sub(special_char_english_pattern, r"\\1 \\2", text)  # Add space between Japanese special chars and English
 
-    # Add space between English letters and punctuation marks for better readability
-    text = re.sub(r'([a-zA-Z])([、。])', r'\\1 \\2', text)
-    text = re.sub(r'([、。])([a-zA-Z])', r'\\1 \\2', text)
+    # Add space between English letters and Japanese punctuation marks for better readability
+    text = re.sub(r'([a-zA-Z])([、。！？])', r'\\1 \\2', text)
 
     return text
 
