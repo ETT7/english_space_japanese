@@ -1,140 +1,140 @@
 
-# VS Code Automation for Formatting English and Japanese Text
+# VS Codeによる英語と日本語のテキストフォーマット自動化
 
-This project automates the process of adding spaces around English words, numbers, and symbols when mixed with Japanese text in files open in VS Code. The Python script (`eng_space_jpn.py`) handles the formatting, and VS Code is configured to run this script using a simple keyboard shortcut.
-
----
-
-## Features
-
-- **Automatically adds spaces around English phrases, numbers, and symbols within Japanese text**.
-- Works seamlessly within VS Code via a custom task with a keyboard shortcut.
-- **Preserves URLs, file paths, and mathematical expressions** without unnecessary changes.
-- Supports both **macOS** and **Windows** platforms.
-- Adds spaces around Japanese special characters (`。、！？「」`) and adjacent English words or symbols.
-- Correctly formats punctuation between Japanese and English, including brackets, parentheses, and other special symbols.
+このプロジェクトは、VS Code内でファイルを開いた状態で、日本語と混在する英語の単語、数字、記号の周りに自動的にスペースを挿入する作業を自動化します。Pythonスクリプト（`eng_space_jpn.py`）がフォーマットを処理し、VS Codeのカスタムタスクによって、このスクリプトをキーボードショートカットで実行できるように設定されています。
 
 ---
 
-## Behavior
+## 特徴
 
-- **Python script (`eng_space_jpn.py`)** will be created at:
-  - On macOS: `~/Documents/my_scripts/`
-  - On Windows: `C:\Users\<Your Username>\Documents\my_scripts\`
-
-- **VS Code settings files (`tasks.json` and `keybindings.json`)** will be configured in:
-  - On macOS: `~/Library/Application Support/Code/User/`
-  - On Windows: `C:\Users\<Your Username>\AppData\Roaming\Code\User\`
-
----
-
-## Requirements
-
-- Python 3 installed on your system.
-- VS Code installed on your system.
+- **日本語テキスト内の英語フレーズ、数字、記号の周りに自動的にスペースを挿入します**。
+- キーボードショートカットでVS Code内でシームレスに動作します。
+- **URL、ファイルパス、数式を不要な変更なく維持します**。
+- **macOS**と**Windows**の両方に対応しています。
+- 日本語の特殊文字（`。、！？「」`）と英語の単語や記号の間にスペースを追加します。
+- 日本語と英語の間の句読点、括弧、その他の記号のフォーマットが正しく行われます。
 
 ---
 
-## Installation
+## 動作
 
-### Step 1: Clone or Download the Project
-Clone this repository or download it as a zip file and extract it on your local machine.
+- **Pythonスクリプト（`eng_space_jpn.py`）**は次の場所に作成されます：
+  - macOS: `~/Documents/my_scripts/`
+  - Windows: `C:\Users\<Your Username>\Documents\my_scripts\`
 
-### Step 2: Run the Setup Script
-Run the provided Python setup script to configure the necessary files and paths.
+- **VS Codeの設定ファイル（`tasks.json`と`keybindings.json`）**は次の場所に設定されます：
+  - macOS: `~/Library/Application Support/Code/User/`
+  - Windows: `C:\Users\<Your Username>\AppData\Roaming\Code\User\`
 
-- **On macOS**:
+---
+
+## 必要条件
+
+- システムにPython 3がインストールされていること。
+- システムにVS Codeがインストールされていること。
+
+---
+
+## インストール手順
+
+### 手順1：プロジェクトをクローンまたはダウンロード
+このリポジトリをクローンするか、zipファイルとしてダウンロードし、ローカルマシンに解凍します。
+
+### 手順2：セットアップスクリプトを実行
+提供されているPythonセットアップスクリプトを実行し、必要なファイルとパスを設定します。
+
+- **macOS**の場合：
   ```bash
   python3 setup.py
   ```
 
-- **On Windows**:
+- **Windows**の場合：
   ```bash
   python setup.py
   ```
 
-This script will:
-- Create the Python script `eng_space_jpn.py` in:
-  - `~/Documents/my_scripts/` (macOS)
-  - `C:\Users\<Your Username>\Documents\my_scripts\` (Windows)
+このスクリプトは次の処理を行います：
+- Pythonスクリプト `eng_space_jpn.py` を次の場所に作成します：
+  - `~/Documents/my_scripts/`（macOS）
+  - `C:\Users\<Your Username>\Documents\my_scripts\`（Windows）
   
-- Configure VS Code `tasks.json` and `keybindings.json` in:
-  - `~/Library/Application Support/Code/User/` (macOS)
-  - `C:\Users\<Your Username>\AppData\Roaming\Code\User/` (Windows)
+- VS Codeの `tasks.json` と `keybindings.json` を次の場所に設定します：
+  - `~/Library/Application Support/Code/User/`（macOS）
+  - `C:\Users\<Your Username>\AppData\Roaming\Code\User/`（Windows）
 
-### Step 3: Restart VS Code
-After running the setup script, restart VS Code for the changes to take effect.
-
----
-
-## Usage
-
-1. **Open a file containing mixed Japanese and English text in VS Code**.
-2. Press `Ctrl + Shift + T` (on Windows) or `Cmd + Shift + T` (on macOS) to run the formatting task.
-3. The script will process the open file and automatically format the text.
+### 手順3：VS Codeを再起動
+セットアップスクリプトを実行した後、VS Codeを再起動して変更を有効にしてください。
 
 ---
 
-## Formatting Behavior
+## 使い方
 
-### 1. **Spaces Between Japanese Characters and English Words**
-   - Adds spaces between Japanese characters and adjacent English text or numbers.
-   - Example:
-     - Input: `こんにちはJohnさん`
-     - Output: `こんにちは John さん`
-
-### 2. **Handling Symbols Around Japanese and English**
-   - Adds spaces between Japanese characters and symbols (e.g., `()`, `[]`, `{}`, `+`, `-`, `*`, `#`, `%`, etc.).
-   - Example:
-     - Input: `彼は3つのアイテム(+100%増量/#割引)を購入しました。`
-     - Output: `彼は 3 つのアイテム (+100% 増量 /# 割引 ) を購入しました。`
-
-### 3. **Japanese Punctuation and English**
-   - Adds spaces between Japanese punctuation marks (`、`, `。`, `！`, `？`, `「」`, etc.) and adjacent English text or symbols.
-   - Example:
-     - Input: `それではまた今度！We’ll keep in touch, right?`
-     - Output: `それではまた今度 ！ We’ll keep in touch, right?`
-
-### 4. **Preserving URLs and File Paths**
-   - Preserves URLs, file paths, and any text that should remain unformatted.
-   - Example:
-     - Input: `Please check the path /usr/local/bin and URL https://example.com`
-     - Output: `Please check the path /usr/local/bin and URL https://example.com`
-
-### 5. **Brackets and Punctuation Handling**
-   - Adds spaces between Japanese punctuation and brackets or parentheses.
-   - Example:
-     - Input: `これは。[テスト]です`
-     - Output: `これは 。 [テスト ]です`
-
-### 6. **Special Handling of Japanese Quotation Marks**
-   - Adds spaces between Japanese quotation marks (`「」`, `『』`, etc.) and adjacent English words or symbols.
-   - Example:
-     - Input: `「さあ行こう！」She is coming soon`
-     - Output: `「さあ行こう！」 She is coming soon`
-
-### 7. **Mathematical Expressions**
-   - Proper spacing is maintained around mathematical symbols (`+`, `-`, `*`, `/`) and Japanese characters or numbers.
-   - Example:
-     - Input: `数学では(+3 * 2) - 1 = 5 のような計算を学びます。`
-     - Output: `数学では (+3 * 2) - 1 = 5 のような計算を学びます。`
+1. **VS Codeで日本語と英語が混在するテキストファイルを開きます**。
+2. `Ctrl + Shift + T`（Windowsの場合）または `Cmd + Shift + T`（macOSの場合）を押してフォーマットタスクを実行します。
+3. スクリプトが開いているファイルを処理し、自動的にテキストをフォーマットします。
 
 ---
 
-## Troubleshooting
+## フォーマットの動作
 
-- **Keybinding issues**: If the keybinding doesn't work, check that your `keybindings.json` and `tasks.json` files were updated correctly.
+### 1. **日本語と英語の間にスペースを追加**
+   - 日本語の文字と隣接する英語のテキストや数字の間にスペースを追加します。
+   - 例：
+     - 入力: `こんにちはJohnさん`
+     - 出力: `こんにちは John さん`
+
+### 2. **日本語と英語の記号の間の処理**
+   - 日本語の文字と記号（例：`()`, `[]`, `{}`, `+`, `-`, `*`, `#`, `%`, など）の間にスペースを追加します。
+   - 例：
+     - 入力: `彼は3つのアイテム(+100%増量/#割引)を購入しました。`
+     - 出力: `彼は 3 つのアイテム (+100% 増量 /# 割引 ) を購入しました。`
+
+### 3. **日本語の句読点と英語**
+   - 日本語の句読点（`、`, `。`, `！`, `？`, `「」` など）と隣接する英語のテキストや記号の間にスペースを追加します。
+   - 例：
+     - 入力: `それではまた今度！We’ll keep in touch, right?`
+     - 出力: `それではまた今度 ！ We’ll keep in touch, right?`
+
+### 4. **URLとファイルパスを保持**
+   - URL、ファイルパス、およびフォーマットを変更せずに維持すべきテキストを保持します。
+   - 例：
+     - 入力: `Please check the path /usr/local/bin and URL https://example.com`
+     - 出力: `Please check the path /usr/local/bin and URL https://example.com`
+
+### 5. **括弧と句読点の処理**
+   - 日本語の句読点と括弧やカッコの間にスペースを追加します。
+   - 例：
+     - 入力: `これは。[テスト]です`
+     - 出力: `これは 。 [テスト ]です`
+
+### 6. **日本語の引用符の特別処理**
+   - 日本語の引用符（`「」`, `『』`, など）と隣接する英語の単語や記号の間にスペースを追加します。
+   - 例：
+     - 入力: `「さあ行こう！」She is coming soon`
+     - 出力: `「さあ行こう！」 She is coming soon`
+
+### 7. **数式の処理**
+   - 数式の記号（`+`, `-`, `*`, `/`）と日本語の文字や数字の周りに適切なスペースを維持します。
+   - 例：
+     - 入力: `数学では(+3 * 2) - 1 = 5 のような計算を学びます。`
+     - 出力: `数学では (+3 * 2) - 1 = 5 のような計算を学びます。`
+
+---
+
+## トラブルシューティング
+
+- **キーバインディングの問題**：キーバインディングが機能しない場合は、`keybindings.json` と `tasks.json` ファイルが正しく更新されたか確認してください。
   - macOS: `~/Library/Application Support/Code/User/`
   - Windows: `C:\Users\<Your Username>\AppData\Roaming\Code\User/`
 
-- **Python script location**: Ensure the script `eng_space_jpn.py` was created in the `Documents/my_scripts/` folder:
+- **Pythonスクリプトの場所**：`eng_space_jpn.py` が `Documents/my_scripts/` フォルダに作成されたことを確認してください：
   - macOS: `~/Documents/my_scripts/`
   - Windows: `C:\Users\<Your Username>\Documents\my_scripts\`
 
-- **Python not found**: If the script doesn't run, make sure Python 3 is installed and available in your system's path.
+- **Pythonが見つからない**：スクリプトが実行されない場合は、Python 3 がインストールされ、システムのパスで使用可能であることを確認してください。
 
 ---
 
-## License
+## ライセンス
 
-This project is licensed under the MIT License.
+このプロジェクトはMITライセンスの下でライセンスされています。
