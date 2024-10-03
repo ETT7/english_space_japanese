@@ -44,6 +44,9 @@ def add_space_around_english(text):
     # Regex to handle spaces between Japanese special characters and English words
     special_char_english_pattern = re.compile(r'([。、！？「」])([a-zA-Z])')
 
+    # Regex to detect file paths (e.g., /usr/local/bin or C:\\Users\\User\\Documents)
+    file_path_pattern = re.compile(r'([a-zA-Z]:\\\\|/)[^\s]*')
+
     def add_space(match):
         if match.group(1) and match.group(2):  # Japanese followed by English/number
             return f"{match.group(1)} {match.group(2)}"
@@ -58,7 +61,15 @@ def add_space_around_english(text):
             return f"{match.group(3)} {match.group(4)}"
         return match.group(0)
 
-    # Apply the pattern until no more changes are made
+    # Step 1: Replace file paths with placeholders
+    file_paths = []
+    def replace_file_path(match):
+        file_paths.append(match.group(0))
+        return f"__FILE_PATH_{len(file_paths)}__"
+
+    text = re.sub(file_path_pattern, replace_file_path, text)  # Detect file paths and replace them with placeholders
+
+    # Step 2: Apply the pattern until no more changes are made
     previous_text = None
     while previous_text != text:
         previous_text = text
@@ -68,6 +79,10 @@ def add_space_around_english(text):
 
     # Add space between English letters and Japanese punctuation marks for better readability
     text = re.sub(r'([a-zA-Z])([、。！？])', r'\\1 \\2', text)
+
+    # Step 3: Restore file paths in the text
+    for i, file_path in enumerate(file_paths):
+        text = text.replace(f"__FILE_PATH_{i+1}__", file_path)
 
     return text
 
