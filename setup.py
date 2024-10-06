@@ -47,8 +47,8 @@ def add_space_around_english(text):
     # Regex to ensure no spaces are added inside or outside around symbols
     outside_symbols_pattern = re.compile(r'([\\(\\{\\[<])\\s*([^\\)\\}\\]>]+?)\\s*([\\)\\}\\]>])')
 
-    # Regex to handle spaces between Japanese punctuation and English words
-    special_char_english_pattern = re.compile(r'([。、！？「」])([a-zA-Z])')
+    # Regex to handle spaces between Japanese punctuation and English words but ignore for specific punctuation like 「」 and 、
+    ignore_japanese_punctuation = re.compile(r'([「」])([a-zA-Z]+)|([a-zA-Z]+)([「」])|([、])([a-zA-Z]+)|([a-zA-Z]+)([、])')
 
     # Regex to handle spaces outside of symbols when followed or preceded by Japanese characters
     outside_japanese_symbols_pattern = re.compile(r'([\\u3040-\\u30FF\\u4E00-\\u9FFF])([\\(\\{\\[<])|([\\)\\}\\]>])([\\u3040-\\u30FF\\u4E00-\\u9FFF])')
@@ -68,26 +68,27 @@ def add_space_around_english(text):
 
     text = re.sub(file_path_pattern, replace_file_path, text)  # Detect file paths and replace them with placeholders
 
-    # Step 2: Skip adding spaces inside symbols that contain Japanese characters
-    text = re.sub(inside_symbols_pattern, lambda m: m.group(0), text)  # Ignore symbols with Japanese inside
-
-    # Step 3: Apply the pattern to handle spaces between Japanese and English/number
+    # Step 2: Loop until no more changes are made (ensure full formatting)
     previous_text = None
     while previous_text != text:
         previous_text = text
+
+        # Skip adding spaces inside symbols that contain Japanese characters
+        text = re.sub(inside_symbols_pattern, lambda m: m.group(0), text)  # Ignore symbols with Japanese inside
+
+        # Apply the pattern to handle spaces between Japanese and English/number
         text = re.sub(mixed_pattern, add_space, text)  # Handle Japanese and English/number
-        text = re.sub(special_char_english_pattern, r"\\1 \\2", text)  # Add space between Japanese punctuation and English
 
-    # Step 4: Remove unnecessary spaces inside and around the symbols
-    text = re.sub(outside_symbols_pattern, r'\\1\\2\\3', text)
+        # Add space outside symbols when followed or preceded by Japanese characters
+        text = re.sub(outside_japanese_symbols_pattern, lambda m: f"{m.group(1) or ''} {m.group(2) or m.group(3)} {m.group(4) or ''}".strip(), text)
 
-    # Step 5: Add space outside symbols when followed or preceded by Japanese characters
-    text = re.sub(outside_japanese_symbols_pattern, lambda m: f"{m.group(1) or ''} {m.group(2) or m.group(3)} {m.group(4) or ''}".strip(), text)
+        # Remove unnecessary spaces inside and around the symbols
+        text = re.sub(outside_symbols_pattern, r'\\1\\2\\3', text)
 
-    # Step 6: Add space between English letters and Japanese punctuation marks for better readability
-    text = re.sub(r'([a-zA-Z])([、。！？])', r'\\1 \\2', text)
+        # Add space between English letters and Japanese punctuation marks but ignore for 「」 and 、
+        text = re.sub(ignore_japanese_punctuation, r'\\1\\2\\3\\4\\5\\6\\7\\8', text)
 
-    # Step 7: Restore file paths in the text
+    # Step 3: Restore file paths in the text
     for i, file_path in enumerate(file_paths):
         text = text.replace(f"__FILE_PATH_{i+1}__", file_path)
 
