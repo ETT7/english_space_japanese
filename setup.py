@@ -30,28 +30,28 @@ print(f"Creating Python script directory at: {PYTHON_SCRIPT_DIR}...")
 os.makedirs(PYTHON_SCRIPT_DIR, exist_ok=True)
 
 # Step 2: Write the Python script to the target directory
-python_script_content = """
+python_script_content = '''
 import re
 import sys
 
 def add_space_around_english(text):
     # Regex to detect Japanese followed by English/number or English/number followed by Japanese
-    mixed_pattern = re.compile(r'([\\u3040-\\u30FF\\u4E00-\\u9FFF])([a-zA-Z0-9])|([a-zA-Z0-9])([\\u3040-\\u30FF\\u4E00-\\u9FFF])')
+    mixed_pattern = re.compile(r"([\\u3040-\\u30FF\\u4E00-\\u9FFF])([a-zA-Z0-9])|([a-zA-Z0-9])([\\u3040-\\u30FF\\u4E00-\\u9FFF])")
 
     # Regex to detect file paths (e.g., /usr/local/bin or C:\\Users\\User\\Documents)
-    file_path_pattern = re.compile(r'([a-zA-Z]:\\\\|/)[^\s]*')
+    file_path_pattern = re.compile(r"([a-zA-Z]:\\\\|/)[^\\s]*")
 
     # Regex to detect symbols with Japanese inside and skip them from adding spaces
-    inside_symbols_pattern = re.compile(r'[\\(\\{\\[<][^\\(\\{\\[\\]<>{}]*[\\u3040-\\u30FF\\u4E00-\\u9FFF][^\\)\\}\\]>]*[\\)\\}\\]>]')
+    inside_symbols_pattern = re.compile(r"[\\(\\{\\[<][^\\(\\{\\[\\]<>{}]*[\\u3040-\\u30FF\\u4E00-\\u9FFF][^\\)\\}\\]>]*[\\)\\}\\]>]")
 
     # Regex to ensure no spaces are added inside or outside around symbols
-    outside_symbols_pattern = re.compile(r'([\\(\\{\\[<])\\s*([^\\)\\}\\]>]+?)\\s*([\\)\\}\\]>])')
+    outside_symbols_pattern = re.compile(r"([\\(\\{\\[<])\\s*([^\\)\\}\\]>]+?)\\s*([\\)\\}\\]>])")
 
     # Regex to handle spaces between Japanese punctuation and English words but ignore for specific punctuation like 「」 and 、
-    ignore_japanese_punctuation = re.compile(r'([「」])([a-zA-Z]+)|([a-zA-Z]+)([「」])|([、])([a-zA-Z]+)|([a-zA-Z]+)([、])')
+    ignore_japanese_punctuation = re.compile(r"([「」])([a-zA-Z]+)|([a-zA-Z]+)([「」])|([、])([a-zA-Z]+)|([a-zA-Z]+)([、])")
 
     # Regex to handle spaces outside of symbols when followed or preceded by Japanese characters
-    outside_japanese_symbols_pattern = re.compile(r'([\\u3040-\\u30FF\\u4E00-\\u9FFF])([\\(\\{\\[<])|([\\)\\}\\]>])([\\u3040-\\u30FF\\u4E00-\\u9FFF])')
+    outside_japanese_symbols_pattern = re.compile(r"([\\u3040-\\u30FF\\u4E00-\\u9FFF])([\\(\\{\\[<])|([\\)\\}\\]>])([\\u3040-\\u30FF\\u4E00-\\u9FFF])")
 
     def add_space(match):
         if match.group(1) and match.group(2):  # Japanese followed by English/number
@@ -83,12 +83,17 @@ def add_space_around_english(text):
         text = re.sub(outside_japanese_symbols_pattern, lambda m: f"{m.group(1) or ''} {m.group(2) or m.group(3)} {m.group(4) or ''}".strip(), text)
 
         # Remove unnecessary spaces inside and around the symbols
-        text = re.sub(outside_symbols_pattern, r'\\1\\2\\3', text)
+        text = re.sub(outside_symbols_pattern, r"\\1\\2\\3", text)
 
         # Add space between English letters and Japanese punctuation marks but ignore for 「」 and 、
-        text = re.sub(ignore_japanese_punctuation, r'\\1\\2\\3\\4\\5\\6\\7\\8', text)
+        text = re.sub(ignore_japanese_punctuation, r"\\1\\2\\3\\4\\5\\6\\7\\8", text)
 
-    # Step 3: Restore file paths in the text
+    # Step 3: Remove unwanted trailing spaces at the end of each line
+    lines = text.splitlines()
+    cleaned_lines = [line.rstrip() for line in lines]
+    text = "\\n".join(cleaned_lines)
+
+    # Step 4: Restore file paths in the text
     for i, file_path in enumerate(file_paths):
         text = text.replace(f"__FILE_PATH_{i+1}__", file_path)
 
@@ -114,7 +119,7 @@ if __name__ == "__main__":
     filepath = sys.argv[1]
     format_file(filepath)
     print(f"File '{filepath}' formatted successfully.")
-"""
+'''
 
 script_file_path = os.path.join(PYTHON_SCRIPT_DIR, PYTHON_SCRIPT_NAME)
 with open(script_file_path, 'w') as python_file:
