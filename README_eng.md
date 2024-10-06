@@ -13,6 +13,7 @@ This project automates the process of adding spaces around English words, number
 - Supports both **macOS** and **Windows** platforms.
 - Adds spaces around Japanese special characters (`。、！？「」`) and adjacent English words or symbols.
 - Correctly formats punctuation between Japanese and English, including brackets, parentheses, and other special symbols.
+- **Ignores URLs and file paths** during formatting to prevent breaking their structure.
 
 ---
 
@@ -96,16 +97,16 @@ After running the setup script, restart VS Code for the changes to take effect.
      - Output: `それではまた今度 ！ We’ll keep in touch, right?`
 
 ### 4. **Preserving URLs and File Paths**
-   - Preserves URLs, file paths, and any text that should remain unformatted.
+   - Detects and preserves URLs, file paths, and any text that should remain unformatted.
    - Example:
      - Input: `Please check the path /usr/local/bin and URL https://example.com`
      - Output: `Please check the path /usr/local/bin and URL https://example.com`
 
 ### 5. **Brackets and Punctuation Handling**
-   - Adds spaces between Japanese punctuation and brackets or parentheses.
+   - Adds spaces **only outside** brackets or parentheses when followed by Japanese characters but does not alter the spaces inside the brackets.
    - Example:
-     - Input: `これは。[テスト]です`
-     - Output: `これは 。 [テスト ]です`
+     - **Input**: `これは。[テスト]です`
+     - **Output**: `これは。[テスト] です`
 
 ### 6. **Special Handling of Japanese Quotation Marks**
    - Adds spaces between Japanese quotation marks (`「」`, `『』`, etc.) and adjacent English words or symbols.
@@ -118,6 +119,12 @@ After running the setup script, restart VS Code for the changes to take effect.
    - Example:
      - Input: `数学では(+3 * 2) - 1 = 5 のような計算を学びます。`
      - Output: `数学では (+3 * 2) - 1 = 5 のような計算を学びます。`
+
+### 8. **Trailing Space Removal**
+   - Removes any unwanted trailing spaces at the end of lines.
+   - Example:
+     - Input: `これはテストです。     `
+     - Output: `これはテストです。`
 
 ---
 
